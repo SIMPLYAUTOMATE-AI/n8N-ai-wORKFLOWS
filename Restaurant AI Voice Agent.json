@@ -1,0 +1,2042 @@
+{
+  "name": "Restaurant AI Voice Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "242c7649-dcf1-4b17-87d6-5f673d81b4c3",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "08c8c4a5-9ce7-4c8c-9bb9-d77af7fb31a6",
+      "name": "Webhook",
+      "webhookId": "242c7649-dcf1-4b17-87d6-5f673d81b4c3"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1wjvtH2TpqJ7zuN_GFKBF2tn8c_pD-pMF68uaaEURPqA",
+          "mode": "list",
+          "cachedResultName": "India Bazaar Bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wjvtH2TpqJ7zuN_GFKBF2tn8c_pD-pMF68uaaEURPqA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wjvtH2TpqJ7zuN_GFKBF2tn8c_pD-pMF68uaaEURPqA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.body.args.name }}",
+            "Phone Number": "={{ $json.body.args.phone_number }}",
+            "Preferred Time": "={{ $json.body.args.preferred_time }}",
+            "Date": "={{ $json.body.args.date }}",
+            "No of people": "={{ $json.body.args.size_of_people }}",
+            "email": "={{ $json.body.args.email_id }}",
+            "transcript": "={{ $json.body.call.transcript }}",
+            "call id": "={{ $json.body.call.call_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Preferred Time",
+              "displayName": "Preferred Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "No of people",
+              "displayName": "No of people",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "transcript",
+              "displayName": "transcript",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "call id",
+              "displayName": "call id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        272,
+        16
+      ],
+      "id": "8f6945f8-691c-480b-9443-1e93576328e2",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0bwuSGd8omydHBnw",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "email": "={{ $json.email }}",
+        "additionalFields": {
+          "firstName": "={{ $json.Name }}",
+          "phoneNumber": "={{ $json['Phone Number'] }}"
+        },
+        "options": {
+          "resolveData": false
+        }
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        16
+      ],
+      "id": "f694f24a-4667-4214-8af4-d1d370e60803",
+      "name": "Create or update a contact",
+      "credentials": {
+        "hubspotOAuth2Api": {
+          "id": "jBIyvW9JKvsZG4MU",
+          "name": "HubSpot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "+16292454086",
+        "to": "={{ $json.properties.mobilephone.value }}",
+        "message": "=Hi {{ $json.properties.firstname.value}}, thanks for calling!.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        816,
+        16
+      ],
+      "id": "1589767b-56b3-4c1e-b88f-dd11c6344734",
+      "name": "Send an SMS/MMS/WhatsApp message",
+      "credentials": {
+        "twilioApi": {
+          "id": "TLOJJEjDWg6UHWcI",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Create or update a contact').item.json.properties.email.value }}",
+        "subject": "Confirmation message",
+        "emailType": "text",
+        "message": "=Hi {{ $('Create or update a contact').item.json.properties.hs_full_name_or_email.value }}, thanks for calling!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "17f791f0-3376-4a48-8830-239ab051ccb4",
+      "name": "Send a message",
+      "webhookId": "b0a1eec4-0da2-4db7-9ade-05be37a3ffcf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4eUUem6OLNyuGcHM",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "akgudivada.app.n8n.cloud",
+            "user-agent": "axios/1.7.7",
+            "content-length": "18538",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "100.20.5.228",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "US",
+            "cf-ray": "960b833ea642efc2-PDX",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "100.20.5.228, 172.68.175.60",
+            "x-forwarded-host": "akgudivada.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-36-bc488dfd9-mh2kd",
+            "x-is-trusted": "yes",
+            "x-real-ip": "100.20.5.228",
+            "x-retell-signature": "v=1752773902931,d=5c830fbfbe732ab60cbf2a81b5223ee88798d090b58ee34f55e8a930fd0d0abe"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "call": {
+              "call_id": "playground",
+              "call_type": "web_call",
+              "agent_id": "agent_d127808cc37ca6877790edf5b8",
+              "agent_version": 0,
+              "agent_name": "AI Voice Agent for Apex India Bazaar",
+              "retell_llm_dynamic_variables": {
+                "session_type": "voice",
+                "call_type": "web_call",
+                "current_agent_state": "appointment_booking",
+                "previous_agent_state": "intro"
+              },
+              "collected_dynamic_variables": {},
+              "call_status": "ongoing",
+              "transcript": "Agent: Hi, thanks for calling India Bazaar. This is Siri—how can I help you today?\nUser: hii\nAgent: Hello! How can I assist you today?\nUser: I want to book a table\nAgent: Great! I can help you with that. What date would you like to make the reservation for?\nUser: today\nAgent: Perfect! What time would you prefer for your reservation today?\nUser: 7pm\nAgent: Got it! How many people will be in your party?\nUser: 6\nAgent: Thank you! Can I have your name, please, for the reservation?\nUser: mahesh\nAgent: Thank you, Mahesh! And could you please provide a phone number in case we need to reach you?\nUser: 6292573730\nAgent: Thanks, Mahesh! Can I have your email address, please?\nUser: peacefulmusic62@gmail.com\nAgent: Just to confirm, I have a reservation for Mahesh, for 6 people today at 7 PM, and we’ll reach you at 6292573730. Is everything correct?\nUser: yes\n",
+              "transcript_object": [
+                {
+                  "messageId": "message_c7b8250bb6a92ce3ac1c9b1c",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Hi, thanks for calling India Bazaar. This is Siri—how can I help you today?",
+                  "createdTimestamp": 1752773901170,
+                  "words": [
+                    {
+                      "word": "Hi, ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "thanks ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "for ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "calling ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "India ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "Bazaar. ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "This ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "is ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "Siri—how ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "can ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "I ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "help ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "you ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "today?",
+                      "start": 0,
+                      "end": 0
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_2e45096dc5b8dbe406526f3d",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "hii",
+                  "createdTimestamp": 1752773901171,
+                  "words": [
+                    {
+                      "word": "hii",
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_4dd8e7983e393463cbba05c2",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Hello! How can I assist you today?",
+                  "createdTimestamp": 1752773901172,
+                  "words": [
+                    {
+                      "word": "Hello! ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "How ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "can ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "I ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "assist ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "today?",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_fc8b1b85c72cda5368383582",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "I want to book a table",
+                  "createdTimestamp": 1752773901173,
+                  "words": [
+                    {
+                      "word": "I ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "want ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "to ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "book ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "a ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "table",
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_d1025f3c861a1ef8e7786f38",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Great! I can help you with that. What date would you like to make the reservation for?",
+                  "createdTimestamp": 1752773901176,
+                  "words": [
+                    {
+                      "word": "Great! ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "I ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "can ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "help ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "with ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "that. ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "What ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "date ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "would ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "like ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "to ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "make ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "the ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "reservation ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "for?",
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_c85a86fce6a18ecd19a3d504",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "today",
+                  "createdTimestamp": 1752773901177,
+                  "words": [
+                    {
+                      "word": "today",
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_5f3db4850aa7993b4fa3ebcc",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Perfect! What time would you prefer for your reservation today?",
+                  "createdTimestamp": 1752773901178,
+                  "words": [
+                    {
+                      "word": "Perfect! ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "What ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "time ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "would ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "you ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "prefer ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "for ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "your ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "reservation ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "today?",
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_115c384fd6cc425060fc6db6",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "7pm",
+                  "createdTimestamp": 1752773901179,
+                  "words": [
+                    {
+                      "word": "7pm",
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_2e173744525a76563908411c",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Got it! How many people will be in your party?",
+                  "createdTimestamp": 1752773901180,
+                  "words": [
+                    {
+                      "word": "Got ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "it! ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "How ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "many ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "people ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "will ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "be ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "in ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "your ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "party?",
+                      "start": 10,
+                      "end": 10
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_d6730d6f768b298e40d2f072",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "6",
+                  "createdTimestamp": 1752773901181,
+                  "words": [
+                    {
+                      "word": "6",
+                      "start": 11,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_8277807676d619ee7658f715",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thank you! Can I have your name, please, for the reservation?",
+                  "createdTimestamp": 1752773901182,
+                  "words": [
+                    {
+                      "word": "Thank ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "you! ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "Can ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "I ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "have ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "your ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "name, ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "please, ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "for ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "the ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "reservation?",
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_51e6318d75dd9c49f3ffc4d0",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "mahesh",
+                  "createdTimestamp": 1752773901183,
+                  "words": [
+                    {
+                      "word": "mahesh",
+                      "start": 13,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_87da76defb98dd3b216c729e",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thank you, Mahesh! And could you please provide a phone number in case we need to reach you?",
+                  "createdTimestamp": 1752773901184,
+                  "words": [
+                    {
+                      "word": "Thank ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "you, ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "Mahesh! ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "And ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "could ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "you ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "please ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "provide ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "a ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "phone ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "number ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "in ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "case ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "we ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "need ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "to ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "reach ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "you?",
+                      "start": 14,
+                      "end": 14
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_b2da3e098b4ced7c41ee689a",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "6292573730",
+                  "createdTimestamp": 1752773901185,
+                  "words": [
+                    {
+                      "word": "6292573730",
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_6223e2a83f9beea9b0cc4f88",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thanks, Mahesh! Can I have your email address, please?",
+                  "createdTimestamp": 1752773901186,
+                  "words": [
+                    {
+                      "word": "Thanks, ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "Mahesh! ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "Can ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "I ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "have ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "your ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "email ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "address, ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "please?",
+                      "start": 16,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_29d511831b0052880654dd83",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "peacefulmusic62@gmail.com",
+                  "createdTimestamp": 1752773901187,
+                  "words": [
+                    {
+                      "word": "peacefulmusic62@gmail.com",
+                      "start": 17,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_5557f28187a5fd431f572696",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Just to confirm, I have a reservation for Mahesh, for 6 people today at 7 PM, and we’ll reach you at 6292573730. Is everything correct?",
+                  "createdTimestamp": 1752773901188,
+                  "words": [
+                    {
+                      "word": "Just ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "to ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "confirm, ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "I ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "have ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "a ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "reservation ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "for ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "Mahesh, ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "for ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "6 ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "people ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "today ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "at ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "7 ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "PM, ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "and ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "we’ll ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "reach ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "you ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "at ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "6292573730. ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "Is ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "everything ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "correct?",
+                      "start": 18,
+                      "end": 18
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_0ed845945446bb467e109d1b",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "yes",
+                  "createdTimestamp": 1752773901189,
+                  "words": [
+                    {
+                      "word": "yes",
+                      "start": 19,
+                      "end": 19
+                    }
+                  ]
+                }
+              ],
+              "transcript_with_tool_calls": [
+                {
+                  "messageId": "message_c7b8250bb6a92ce3ac1c9b1c",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Hi, thanks for calling India Bazaar. This is Siri—how can I help you today?",
+                  "createdTimestamp": 1752773901170,
+                  "words": [
+                    {
+                      "word": "Hi, ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "thanks ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "for ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "calling ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "India ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "Bazaar. ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "This ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "is ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "Siri—how ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "can ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "I ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "help ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "you ",
+                      "start": 0,
+                      "end": 0
+                    },
+                    {
+                      "word": "today?",
+                      "start": 0,
+                      "end": 0
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_2e45096dc5b8dbe406526f3d",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "hii",
+                  "createdTimestamp": 1752773901171,
+                  "words": [
+                    {
+                      "word": "hii",
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_4dd8e7983e393463cbba05c2",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Hello! How can I assist you today?",
+                  "createdTimestamp": 1752773901172,
+                  "words": [
+                    {
+                      "word": "Hello! ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "How ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "can ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "I ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "assist ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "today?",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_fc8b1b85c72cda5368383582",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "I want to book a table",
+                  "createdTimestamp": 1752773901173,
+                  "words": [
+                    {
+                      "word": "I ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "want ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "to ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "book ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "a ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "table",
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                },
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "7a712408ae45e0f7",
+                  "name": "transition_to_appointment_booking",
+                  "arguments": "{}"
+                },
+                {
+                  "messageId": "message_d1025f3c861a1ef8e7786f38",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Great! I can help you with that. What date would you like to make the reservation for?",
+                  "createdTimestamp": 1752773901176,
+                  "words": [
+                    {
+                      "word": "Great! ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "I ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "can ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "help ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "with ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "that. ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "What ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "date ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "would ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "like ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "to ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "make ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "the ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "reservation ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "for?",
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_c85a86fce6a18ecd19a3d504",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "today",
+                  "createdTimestamp": 1752773901177,
+                  "words": [
+                    {
+                      "word": "today",
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_5f3db4850aa7993b4fa3ebcc",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Perfect! What time would you prefer for your reservation today?",
+                  "createdTimestamp": 1752773901178,
+                  "words": [
+                    {
+                      "word": "Perfect! ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "What ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "time ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "would ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "you ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "prefer ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "for ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "your ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "reservation ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "today?",
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_115c384fd6cc425060fc6db6",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "7pm",
+                  "createdTimestamp": 1752773901179,
+                  "words": [
+                    {
+                      "word": "7pm",
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_2e173744525a76563908411c",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Got it! How many people will be in your party?",
+                  "createdTimestamp": 1752773901180,
+                  "words": [
+                    {
+                      "word": "Got ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "it! ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "How ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "many ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "people ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "will ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "be ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "in ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "your ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "party?",
+                      "start": 10,
+                      "end": 10
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_d6730d6f768b298e40d2f072",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "6",
+                  "createdTimestamp": 1752773901181,
+                  "words": [
+                    {
+                      "word": "6",
+                      "start": 11,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_8277807676d619ee7658f715",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thank you! Can I have your name, please, for the reservation?",
+                  "createdTimestamp": 1752773901182,
+                  "words": [
+                    {
+                      "word": "Thank ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "you! ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "Can ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "I ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "have ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "your ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "name, ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "please, ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "for ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "the ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "reservation?",
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_51e6318d75dd9c49f3ffc4d0",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "mahesh",
+                  "createdTimestamp": 1752773901183,
+                  "words": [
+                    {
+                      "word": "mahesh",
+                      "start": 13,
+                      "end": 13
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_87da76defb98dd3b216c729e",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thank you, Mahesh! And could you please provide a phone number in case we need to reach you?",
+                  "createdTimestamp": 1752773901184,
+                  "words": [
+                    {
+                      "word": "Thank ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "you, ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "Mahesh! ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "And ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "could ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "you ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "please ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "provide ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "a ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "phone ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "number ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "in ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "case ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "we ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "need ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "to ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "reach ",
+                      "start": 14,
+                      "end": 14
+                    },
+                    {
+                      "word": "you?",
+                      "start": 14,
+                      "end": 14
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_b2da3e098b4ced7c41ee689a",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "6292573730",
+                  "createdTimestamp": 1752773901185,
+                  "words": [
+                    {
+                      "word": "6292573730",
+                      "start": 15,
+                      "end": 15
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_6223e2a83f9beea9b0cc4f88",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thanks, Mahesh! Can I have your email address, please?",
+                  "createdTimestamp": 1752773901186,
+                  "words": [
+                    {
+                      "word": "Thanks, ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "Mahesh! ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "Can ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "I ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "have ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "your ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "email ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "address, ",
+                      "start": 16,
+                      "end": 16
+                    },
+                    {
+                      "word": "please?",
+                      "start": 16,
+                      "end": 16
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_29d511831b0052880654dd83",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "peacefulmusic62@gmail.com",
+                  "createdTimestamp": 1752773901187,
+                  "words": [
+                    {
+                      "word": "peacefulmusic62@gmail.com",
+                      "start": 17,
+                      "end": 17
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_5557f28187a5fd431f572696",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Just to confirm, I have a reservation for Mahesh, for 6 people today at 7 PM, and we’ll reach you at 6292573730. Is everything correct?",
+                  "createdTimestamp": 1752773901188,
+                  "words": [
+                    {
+                      "word": "Just ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "to ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "confirm, ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "I ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "have ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "a ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "reservation ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "for ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "Mahesh, ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "for ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "6 ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "people ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "today ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "at ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "7 ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "PM, ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "and ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "we’ll ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "reach ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "you ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "at ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "6292573730. ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "Is ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "everything ",
+                      "start": 18,
+                      "end": 18
+                    },
+                    {
+                      "word": "correct?",
+                      "start": 18,
+                      "end": 18
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_0ed845945446bb467e109d1b",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "yes",
+                  "createdTimestamp": 1752773901189,
+                  "words": [
+                    {
+                      "word": "yes",
+                      "start": 19,
+                      "end": 19
+                    }
+                  ]
+                },
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "b3683ee7cfdae47c",
+                  "name": "submit_lead_info",
+                  "arguments": "{\"name\":\"Mahesh\",\"size_of_people\":6,\"date\":\"today\",\"email_id\":\"peacefulmusic62@gmail.com\",\"preferred_time\":\"7 PM\",\"phone_number\":6292573730}"
+                }
+              ],
+              "latency": {},
+              "call_cost": {
+                "product_costs": [],
+                "combined_cost": 0,
+                "total_duration_seconds": 0,
+                "total_duration_unit_price": 0
+              },
+              "opt_out_sensitive_data_storage": false,
+              "opt_in_signed_url": false,
+              "tool_mocks": [],
+              "access_token": ""
+            },
+            "name": "submit_lead_info",
+            "args": {
+              "name": "Mahesh",
+              "size_of_people": 6,
+              "date": "today",
+              "email_id": "peacefulmusic62@gmail.com",
+              "preferred_time": "7 PM",
+              "phone_number": 6292573730
+            }
+          },
+          "webhookUrl": "https://akgudivada.app.n8n.cloud/webhook/242c7649-dcf1-4b17-87d6-5f673d81b4c3",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Create or update a contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create or update a contact": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0dce3a78-4e37-437f-9661-42854acfda72",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "20d42ae71f2878766a1b8d451b2232313d2edaffe85b2bcb1cde2582fc201b9f"
+  },
+  "id": "ZN1wf5EHhFIhInfd",
+  "tags": []
+}
